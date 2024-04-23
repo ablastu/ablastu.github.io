@@ -2,34 +2,35 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>AR Demo</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.2.0/aframe/build/aframe-ar.js"></script>
+    <title>MindAR Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-mindar/aframe-mindar.js"></script>
 </head>
-<body>
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-        <!-- Marca propia de tipo imagen -->
-        <a-marker preset="custom" type="pattern" url="path/to/marker-pattern.patt">
-            <a-image src="path/to/your-image.png"></a-image>
-        </a-marker>
+<body style="margin : 0px; overflow: hidden;">
+    <a-scene mindar="imageTargetSrc: path/to/your-targets.mind" renderer="colorManagement: true; antialias: true; logarithmicDepthBuffer: true;">
+        <!-- Marca propia de tipo imagen (Target Image) -->
+        <a-assets>
+            <img id="example-image" src="path/to/your-image.png">
+        </a-assets>
+
+        <a-image mindar-image-target="targetIndex: 0" src="#example-image"></a-image>
 
         <!-- Modelos 3D integrados con objetos reales -->
-        <a-entity gltf-model="url(path/to/model1.glb)" scale="0.5 0.5 0.5" position="0 0 0"></a-entity>
-        <a-entity gltf-model="url(path/to/model2.glb)" scale="0.5 0.5 0.5" position="1 0 0"></a-entity>
+        <a-entity mindar-image-target="targetIndex: 0" gltf-model="url(path/to/model1.glb)" position="100 0 -300" scale="5 5 5"></a-entity>
+        <a-entity mindar-image-target="targetIndex: 0" gltf-model="url(path/to/model2.glb)" position="-100 0 -300" scale="5 5 5"></a-entity>
 
         <!-- Objeto real que crea oclusión -->
-        <a-box position="0 0.25 -1" scale="0.5 0.5 0.5" color="red"></a-box>
+        <a-box mindar-image-target="targetIndex: 0" position="0 50 -200" depth="10" height="100" width="200" material="opacity: 0.5; side: double" color="grey"></a-box>
 
-        <!-- Iluminación con fuentes de luz -->
-        <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
-        <a-light type="directional" position="2 4 -3" target="#target" color="#ff0000" intensity="0.8"></a-light>
-        <a-entity id="target" position="0 0 -1"></a-entity>
+        <!-- Iluminación con fuentes de luz de 2 colores diferentes -->
+        <a-light type="ambient" color="#445" intensity="0.5"></a-light>
+        <a-light type="point" color="#324" intensity="1" position="-200 400 -400"></a-light>
+        <a-light type="point" color="#830" intensity="1" position="200 600 -300"></a-light>
 
-        <!-- Sombras -->
-        <a-entity light="type: directional; castShadow: true;" position="0 5 0"></a-entity>
-        <a-entity shadow="cast: true; receive: true"></a-entity>
+        <!-- Sombras adecuadas -->
+        <a-entity light="type: directional; color: #FFF; intensity: 0.5; castShadow: true;" position="-200 400 -400"></a-entity>
+        <a-plane rotation="-90 0 0" width="5000" height="5000" shadow="receive: true" position="0 -10 0"></a-plane>
 
-        <a-camera-static></a-camera-static>
     </a-scene>
 </body>
 </html>
