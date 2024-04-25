@@ -15,7 +15,12 @@
     <!-- Configuración de la realidad aumentada -->
     <a-entity mindar-image-target="targetIndex: 0">
       <!-- Modelo 3D -->
-      <a-gltf-model src="cactus.glb" scale="5 5 5" position="0 0 0" rotation="180 0 0" shadow="cast: true; receive: true"></a-gltf-model>
+      <a-entity position="0 0 0">
+        <a-box position="0 0.5 0" depth="0.1" height="1" width="0.1" color="green"></a-box> <!-- Eje Y -->
+        <a-box position="0.5 0 0" depth="0.1" height="0.1" width="1" color="red"></a-box>   <!-- Eje X -->
+        <a-box position="0 0 0.5" depth="1" height="0.1" width="0.1" color="blue"></a-box>  <!-- Eje Z -->
+      </a-entity>      
+      <a-gltf-model src="cactus.glb" scale="2 2 2" position="0 0 0" rotation="0 180 0" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
 
     <!-- Luces -->
