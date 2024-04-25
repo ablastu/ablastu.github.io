@@ -14,15 +14,7 @@
 
     <!-- Configuración de la realidad aumentada -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Ejes de referencia -->
-      <a-entity id="axis" scale="1 1 1"> 
-        <a-box position="0.5 0 0" depth="0.1" height="0.1" width="1" color="red"></a-box>
-        <a-box position="0 0.5 0" depth="0.1" height="1" width="0.1" color="green"></a-box>
-        <a-box position="0 0 0.5" depth="1" height="0.1" width="0.1" color="blue"></a-box>
-      </a-entity>
-
       <!-- Modelo 3D -->
-      <!-- Reemplaza 'path_to_your_model/model.glb' con la ruta al modelo 3D que quieres usar -->
       <a-gltf-model src="cactus.glb" scale="0.5 0.5 0.5" position="0 0 0" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
 
