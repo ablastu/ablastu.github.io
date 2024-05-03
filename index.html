@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <title>Realidad Aumentada con A-Frame y MindAR</title>
@@ -8,19 +7,17 @@
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-image-aframe.prod.js"></script>
 </head>
-
 <body>
   <a-scene mindar-image="imageTargetSrc: targets(3).mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <!-- Cámara ajustada para AR -->
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
 
     <!-- Registro de componente de oclusión -->
     <script>
       AFRAME.registerComponent('occlusion', {
         init: function () {
           const material = new THREE.MeshStandardMaterial({
-            colorWrite: false
+            colorWrite: false // El material no escribe color, solo profundidad
           });
           this.el.object3D.traverse((obj) => {
             if (obj.isMesh) obj.material = material;
@@ -31,17 +28,18 @@
 
     <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Modelos 3D específicos -->
+      <!-- Modelo 3D del cactus -->
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
-      <!-- <a-gltf-model src="path_to_your_model/anotherModel.glb" position="1 0.75 1"></a-gltf-model> -->
+      
       <!-- Cilindro creado como oclusor -->
-      <a-cylinder occlusion position="0 0.5 0" radius="0.25" height="1" color="grey"></a-cylinder>
+      <a-cylinder occlusion position="0 1 -0.5" radius="0.5" height="2" color="grey"></a-cylinder>
     </a-entity>
 
-    <!-- Luz direccional para mejor iluminación y sombras -->
+    <!-- Luz direccional principal -->
     <a-light type="directional" color="#FFF" intensity="1" position="1 2 1" castShadow="true"></a-light>
+    <!-- Luz ambiental adicional para suavizar sombras -->
+    <a-light type="ambient" color="#886644" intensity="0.5"></a-light>
 
   </a-scene>
 </body>
-
 </html>
