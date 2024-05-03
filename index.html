@@ -16,11 +16,13 @@
     <script>
       AFRAME.registerComponent('occlusion', {
         init: function () {
-          const material = new THREE.MeshStandardMaterial({
-            colorWrite: false // El material no escribe color, solo profundidad
-          });
-          this.el.object3D.traverse((obj) => {
-            if (obj.isMesh) obj.material = material;
+          this.el.addEventListener('model-loaded', () => {
+            const material = new THREE.MeshStandardMaterial({
+              colorWrite: false
+            });
+            this.el.object3D.traverse((obj) => {
+              if (obj.isMesh) obj.material = material;
+            });
           });
         }
       });
@@ -28,17 +30,14 @@
 
     <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Modelo 3D del cactus -->
+      <!-- Modelos 3D específicos -->
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
-      
       <!-- Cilindro creado como oclusor -->
-      <a-cylinder occlusion position="0 0 0" radius="0.5" height="2" color="grey"></a-cylinder>
+      <a-cylinder occlusion position="0 0.5 -0.5" radius="0.5" height="2" color="grey"></a-cylinder>
     </a-entity>
 
-    <!-- Luz direccional principal -->
+    <!-- Luz direccional para mejor iluminación y sombras -->
     <a-light type="directional" color="#FFF" intensity="1" position="1 2 1" castShadow="true"></a-light>
-    <!-- Luz ambiental adicional para suavizar sombras -->
-    <a-light type="ambient" color="#886644" intensity="0.5"></a-light>
 
   </a-scene>
 </body>
