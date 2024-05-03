@@ -2,31 +2,52 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Ejemplo de Realidad Aumentada con A-Frame y MindAR</title>
+  <title>Realidad Aumentada con A-Frame y MindAR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-image-aframe.prod.js"></script>
+  <!-- Uso de A-Frame directamente desde el CDN de GitHub -->
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <!-- Inclusión de MindAR para seguimiento de imagen -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
-  <a-scene mindar-image="imageTargetSrc: targets(3).mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-    <!-- Cámara sin controles de movimiento -->
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-    <!-- Configuración de la realidad aumentada -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Modelo 3D -->
-      <a-entity position="0 0 0">
-        <a-box position="0 0.5 0" depth="0.1" height="1" width="0.1" color="green"></a-box> <!-- Eje Y -->
-        <a-box position="0.5 0 0" depth="0.1" height="0.1" width="1" color="red"></a-box>   <!-- Eje X -->
-        <a-box position="0 0 0.5" depth="1" height="0.1" width="0.1" color="blue"></a-box>  <!-- Eje Z -->
-      </a-entity>      
-      <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
+  <a-scene mindar-image="imageTargetSrc: targets(3).mind;" ar-hit-test="target:#objects;" webxr reflection="directionalLight:#real-light" renderer="physicallyCorrectLights:true; colorManagement:true; exposure:1; toneMapping:ACESFilmic;">
+    <!-- Cámara ajustada para AR -->
+    <a-camera position="0 0.4 0"></a-camera>
+    
+    <!-- Agrupación de objetos para fácil manejo en AR, visibles sólo cuando la marca es detectada -->
+    <a-entity id="objects" scale="0.2 0.2 0.2" position="0 0 -1">
+      <!-- Modelos 3D específicos -->
+      <a-gltf-model src="cactus.glb" position="-1 0.5 1" rotation="0 45 0"></a-gltf-model>
+      <a-gltf-model src="path_to_your_model/anotherModel.glb" position="1 0.75 1"></a-gltf-model>
+      <!-- Cilindro para crear oclusión -->
+      <a-cylinder position="0 0.5 1" radius="0.25" height="1" color="grey" material="opacity: 0.5;"></a-cylinder>
     </a-entity>
 
-    <!-- Luces -->
-    <!-- Ajusta la posición, color e intensidad según las necesidades de tu escena -->
-    <a-light type="directional" color="#FFF" intensity="1" position="-2 4 -2"></a-light>
-    <a-light type="ambient" color="#666"></a-light>
+    <!-- Configuración de luz y sombras -->
+    <a-light id="real-light" type="directional" position="1 1 1" intensity="0.5" light="castShadow:true;shadowCameraAutomatic:#objects;"></a-light>
+    
+    <!-- Plano para recibir sombras, ajustando su posición según los objetos -->
+    <a-plane id="shadow-plane" follow-shadow="#objects" material="shader:shadow" shadow="receive:true; cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
+    
+    <!-- Cielo para el color de fondo -->
+    <a-sky color="#ECECEC"></a-sky>
   </a-scene>
+
+  <script>
+    // Componente para hacer que el plano de sombras siga a los objetos
+    AFRAME.registerComponent('follow-shadow', {
+      schema: {type: 'selector'},
+      init: function() {
+        this.el.object3D.renderOrder = -1; // Asegura que el plano está por debajo visualmente
+      },
+      tick: function() {
+        if (this.data) {
+          var pos = this.data.object3D.position.clone();
+          pos.y -= 0.001; // Ligeramente debajo para evitar z-fighting
+          this.el.object3D.position.copy(pos);
+        }
+      }
+    });
+  </script>
 </body>
 </html>
