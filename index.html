@@ -4,50 +4,42 @@
   <meta charset="UTF-8">
   <title>Realidad Aumentada con A-Frame y MindAR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Uso de A-Frame directamente desde el CDN de GitHub -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <!-- Inclusión de MindAR para seguimiento de imagen -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
-  <a-scene mindar-image="imageTargetSrc: targets(3).mind;" ar-hit-test="target:#objects;" webxr reflection="directionalLight:#real-light" renderer="physicallyCorrectLights:true; colorManagement:true; exposure:1; toneMapping:ACESFilmic;">
+  <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' mindar-image="imageTargetSrc: path_to_your_target_image/targets.mind;">
     <!-- Cámara ajustada para AR -->
     <a-camera position="0 0.4 0"></a-camera>
     
-    <!-- Agrupación de objetos para fácil manejo en AR, visibles sólo cuando la marca es detectada -->
-    <a-entity id="objects" scale="0.2 0.2 0.2" position="0 0 -1">
+    <!-- Registro de componente de oclusión -->
+    <script>
+      AFRAME.registerComponent('occlusion', {
+        init: function() {
+          const material = new THREE.MeshStandardMaterial({
+            colorWrite: false
+          });
+          this.el.object3D.traverse((obj) => {
+            if (obj.isMesh) obj.material = material;
+          });
+        }
+      });
+    </script>
+    
+    <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
+    <a-entity mindar-image-target="targetIndex: 0">
       <!-- Modelos 3D específicos -->
-      <a-gltf-model src="cactus.glb" position="-1 0.5 1" rotation="0 45 0"></a-gltf-model>
+      <a-gltf-model src="path_to_your_model/cactus.glb" position="-1 0.5 1" rotation="0 45 0"></a-gltf-model>
       <a-gltf-model src="path_to_your_model/anotherModel.glb" position="1 0.75 1"></a-gltf-model>
-      <!-- Cilindro para crear oclusión -->
-      <a-cylinder position="0 0.5 1" radius="0.25" height="1" color="grey" material="opacity: 0.5;"></a-cylinder>
+      <!-- Cilindro creado como oclusor -->
+      <a-cylinder occlusion position="0 0.5 1" radius="0.25" height="1" color="grey"></a-cylinder>
     </a-entity>
 
-    <!-- Configuración de luz y sombras -->
-    <a-light id="real-light" type="directional" position="1 1 1" intensity="0.5" light="castShadow:true;shadowCameraAutomatic:#objects;"></a-light>
+    <!-- Luz direccional para mejor iluminación y sombras -->
+    <a-light type="directional" color="#FFF" intensity="1" position="1 2 1" castShadow="true"></a-light>
     
-    <!-- Plano para recibir sombras, ajustando su posición según los objetos -->
-    <a-plane id="shadow-plane" follow-shadow="#objects" material="shader:shadow" shadow="receive:true; cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
-    
-    <!-- Cielo para el color de fondo -->
+    <!-- Fondo del cielo simple -->
     <a-sky color="#ECECEC"></a-sky>
   </a-scene>
-
-  <script>
-    // Componente para hacer que el plano de sombras siga a los objetos
-    AFRAME.registerComponent('follow-shadow', {
-      schema: {type: 'selector'},
-      init: function() {
-        this.el.object3D.renderOrder = -1; // Asegura que el plano está por debajo visualmente
-      },
-      tick: function() {
-        if (this.data) {
-          var pos = this.data.object3D.position.clone();
-          pos.y -= 0.001; // Ligeramente debajo para evitar z-fighting
-          this.el.object3D.position.copy(pos);
-        }
-      }
-    });
-  </script>
 </body>
 </html>
