@@ -12,7 +12,8 @@
 <body>
   <a-scene mindar-image="imageTargetSrc: targets(3).mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <!-- Cámara ajustada para AR -->
-    <a-camera position="0 0.4 0"></a-camera>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
 
     <!-- Registro de componente de oclusión -->
     <script>
@@ -31,7 +32,7 @@
     <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
     <a-entity mindar-image-target="targetIndex: 0">
       <!-- Modelos 3D específicos -->
-      <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180"></a-gltf-model>
+      <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
       <!-- <a-gltf-model src="path_to_your_model/anotherModel.glb" position="1 0.75 1"></a-gltf-model> -->
       <!-- Cilindro creado como oclusor -->
       <a-cylinder occlusion position="0 0.5 0" radius="0.25" height="1" color="grey"></a-cylinder>
