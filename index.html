@@ -19,10 +19,15 @@
     <script>
       AFRAME.registerComponent('occlusion', {
         init: function () {
-          // Marcar la posición del cilindro
-          this.el.object3D.visible = false; // Ocultar el cilindro inicialmente
-          this.el.addEventListener('model-loaded', () => {
-            this.el.object3D.visible = true; // Mostrar el cilindro una vez que se carga
+          const cylinder = this.el;
+          // Configurar el cilindro como objeto de oclusión
+          cylinder.addEventListener('model-loaded', () => {
+            const material = new THREE.MeshStandardMaterial({
+              colorWrite: false
+            });
+            cylinder.object3D.traverse((obj) => {
+              if (obj.isMesh) obj.material = material;
+            });
           });
         }
       });
@@ -33,10 +38,9 @@
       <!-- Modelos 3D específicos -->
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180"
         shadow="cast: true; receive: true"></a-gltf-model>
-      <!-- Cilindro creado como referencia visual para la posición del objeto real -->
+      <!-- Cilindro creado como objeto de oclusión -->
       <a-cylinder occlusion position="-0.5 -0.5 0" radius="0.2" height="1" rotation="-90 0 180"
         material="opacity: 0.5;"></a-cylinder>
-
     </a-entity>
 
     <!-- Luz direccional principal -->
