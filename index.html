@@ -19,10 +19,10 @@
     <script>
       AFRAME.registerComponent('occlusion', {
         init: function () {
-          // Marca la posición del cilindro y luego lo oculta
-          const cylinder = this.el;
+          // Marcar la posición del cilindro
+          this.el.object3D.visible = false; // Ocultar el cilindro inicialmente
           this.el.addEventListener('model-loaded', () => {
-            cylinder.object3D.visible = false;
+            this.el.object3D.visible = true; // Mostrar el cilindro una vez que se carga
           });
         }
       });
@@ -33,13 +33,9 @@
       <!-- Modelos 3D específicos -->
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180"
         shadow="cast: true; receive: true"></a-gltf-model>
-      <!-- Cilindro creado como oclusor -->
+      <!-- Cilindro creado como referencia visual para la posición del objeto real -->
       <a-cylinder occlusion position="-0.5 -0.5 0" radius="0.2" height="1" rotation="-90 0 180"
-        color="grey"></a-cylinder>
-
-      <!-- Objeto real para oclusión
-      <a-entity obj-model="obj: url(objeto_real.obj)" position="0 -1.5 0" scale="0.1 0.1 0.1"
-        rotation="-90 0 180"></a-entity> -->
+        material="opacity: 0.5;"></a-cylinder>
 
     </a-entity>
 
