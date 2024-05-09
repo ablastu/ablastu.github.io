@@ -19,34 +19,13 @@
     <script>
       AFRAME.registerComponent('occlusion', {
         init: function () {
-          const cylinder = this.el;
-          // Configurar el cilindro como objeto de oclusión
-          cylinder.addEventListener('model-loaded', () => {
-            const material = new THREE.ShaderMaterial({
-              vertexShader: `
-                varying vec3 vNormal;
-                void main() {
-                  vNormal = normal;
-                  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-              `,
-              fragmentShader: `
-                varying vec3 vNormal;
-                void main() {
-                  vec3 normal = normalize(vNormal);
-                  float occlusion = 1.0; // Oclusión completa por defecto
-                  if (normal.z > 0.0) {
-                    occlusion = 0.0; // Sin oclusión si la normal está en dirección positiva z (hacia la cámara)
-                  }
-                  gl_FragColor = vec4(0.0, 0.0, 0.0, occlusion);
-                }
-              `,
-              transparent: true,
-              side: THREE.DoubleSide // Asegurar que el material se aplique en ambas caras del cilindro
-            });
-            cylinder.object3D.traverse((obj) => {
-              if (obj.isMesh) obj.material = material;
-            });
+          // Create occlusion material (only depth not color)
+          const material = new THREE.MeshStandardMaterial({
+            colorWrite: false,
+          });
+          // Apply material to object and all children
+          this.el.object3D.traverse((obj) => {
+            obj.material = material;
           });
         }
       });
