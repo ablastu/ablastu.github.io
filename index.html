@@ -37,13 +37,21 @@
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180"
         shadow="cast: true; receive: true"></a-gltf-model>
       <!-- Cilindro creado como oclusor -->
-      <a-cylinder occlusion position="-0.5 -0.5 0" radius="0.4" height="1" rotation="-90 0 180" color="grey"></a-cylinder>
+      <a-cylinder occlusion position="-0.5 -0.5 0" radius="0.4" height="1" rotation="-90 0 180"
+        color="grey"></a-cylinder>
 
+      <!-- Objeto real para oclusión -->
+      <a-entity obj-model="obj: url(objeto_real.obj)" position="0 -1.5 0" scale="0.1 0.1 0.1"
+        rotation="-90 0 180"></a-entity>
+
+    </a-entity>
 
     <!-- Luz direccional principal -->
-    <a-light type="directional" color="#FFF" intensity="1" position="1 2 1" castShadow="true"></a-light>
+    <a-light type="directional" color="#FFFFFF" intensity="1" position="1 2 1" castShadow="true"></a-light>
+    <!-- Luz direccional secundaria -->
+    <a-light type="directional" color="#FF0000" intensity="0.5" position="-1 2 -1" castShadow="true"></a-light>
     <!-- Luz ambiental adicional para suavizar sombras -->
-    <a-light type="ambient" color="#886644" intensity="0.5"></a-light>
+    <a-light type="ambient" color="#888888" intensity="0.5"></a-light>
   </a-scene>
 </body>
 
