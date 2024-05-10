@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <title>Realidad Aumentada con A-Frame y MindAR</title>
@@ -12,55 +11,48 @@
       init: function () {
         // Create shadow material
         const material = new THREE.ShadowMaterial({
-          opacity: 0.1, // You can adjust opacity to get the desired shadow visibility
+          opacity: 0.1
         });
-
         // Apply material to object and all children
         this.el.object3D.traverse((obj) => {
           obj.material = material;
         });
       }
     });
+
+    AFRAME.registerComponent('occlusion', {
+      init: function () {
+        // Create occlusion material (only depth not color)
+        const material = new THREE.MeshStandardMaterial({
+          colorWrite: false
+        });
+        // Apply material to object and all children
+        this.el.object3D.traverse((obj) => {
+          if (obj.isMesh) obj.material = material;
+        });
+      }
+    });
   </script>
 </head>
-
 <body>
   <a-scene mindar-image="imageTargetSrc: targets(3).mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" renderer="shadowMapEnabled: true">
     <!-- Cámara ajustada para AR -->
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Registro de componente de oclusión -->
-    <script>
-      AFRAME.registerComponent('occlusion', {
-        init: function () {
-          // Create occlusion material (only depth not color)
-          const material = new THREE.MeshStandardMaterial({
-            colorWrite: false
-          });
-          // Apply material to object and all children
-          this.el.object3D.traverse((obj) => {
-            obj.material = material;
-          });
-        }
-      });
-    </script>
-
     <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-cylinder position="-0.5 -0.5 0" radius="0.2" height="1" rotation="-90 0 180" occlusion></a-cylinder>
+      <a-box position="-0.5 -0.5 0" width="0.5" height="0.5" depth="0.5" rotation="-90 0 180" occlusion></a-box>
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
 
-    <!-- Luz direccional principal -->
-    <a-light type="directional" color="#FFFFFF" intensity="1" position="1 2 1" cast-shadow="true"></a-light>
-    <!-- Luz direccional secundaria -->
-    <a-light type="directional" color="#FF0000" intensity="0.5" position="-1 2 -1" cast-shadow="true"></a-light>
-    <!-- Luz ambiental adicional para suavizar sombras -->
-    <a-light type="ambient" color="#888888" intensity="0.5"></a-light>
-    
-    <!-- Plano para recibir sombras -->
-    <a-plane position="0 0 -1" rotation="-90 0 0" width="2" height="2" shadowonly></a-plane>
+    <!-- Luces configuradas como en el ejemplo -->
+    <a-entity id="luz_amarilla" position="-1.8 3 -2.5" rotation="-37 -20 0" light="type:spot; castShadow:true; intensity:0.7; color:yellow"></a-entity>
+    <a-entity id="luz_blanca" position="1 2 1" light="type:directional; castShadow:true; intensity:0.9; color:white"></a-entity>
+    <a-entity id="luz_ambiente" light="type:ambient; intensity:0.2"></a-entity>
+
+    <!-- Planos que reciben sombras -->
+    <a-plane id="suelo" shadow="cast:false" shadowonly material="color:white;opacity:0.5" position="-1.25 0 -2" rotation="-90 10 0" scale="3.5 3 3"></a-plane>
+    <a-plane id="pared" shadow="cast:false" shadowonly material="color:white;opacity:0.5" position="-1.74 1.5 -3.457" rotation="0 10 0" scale="3 3 3"></a-plane>
   </a-scene>
 </body>
-
 </html>
