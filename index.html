@@ -7,19 +7,6 @@
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-image-aframe.prod.js"></script>
   <script>
-    AFRAME.registerComponent('shadowonly', {
-      init: function () {
-        // Create shadow material
-        const material = new THREE.ShadowMaterial({
-          opacity: 0.1
-        });
-        // Apply material to object and all children
-        this.el.object3D.traverse((obj) => {
-          obj.material = material;
-        });
-      }
-    });
-
     AFRAME.registerComponent('occlusion', {
       init: function () {
         // Create occlusion material (only depth not color)
@@ -39,20 +26,18 @@
     <!-- Cámara ajustada para AR -->
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+    <!-- Configuración de luces para emitir sombras -->
+    <a-light type="directional" color="#FFFFFF" intensity="1" position="1 2 1" cast-shadow="true"></a-light>
+    <a-light type="spot" color="#FF0000" intensity="0.5" position="-1 2 -1" cast-shadow="true"></a-light>
+    <a-light type="ambient" color="#888888" intensity="0.5"></a-light>
+
     <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-box position="-0.5 -0.5 0" width="0.5" height="0.5" depth="0.5" rotation="-90 0 180" occlusion></a-box>
+      <!-- Cubo que realiza oclusión -->
+      <a-box position="-0.5 -0.5 0" width="0.5" height="0.5" depth="0.5" rotation="-90 0 180" occlusion shadow="cast: true; receive: true"></a-box>
+      <!-- Modelo 3D que recibe y proyecta sombras -->
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
-
-    <!-- Luces configuradas como en el ejemplo -->
-    <a-entity id="luz_amarilla" position="-1.8 3 -2.5" rotation="-37 -20 0" light="type:spot; castShadow:true; intensity:0.7; color:yellow"></a-entity>
-    <a-entity id="luz_blanca" position="1 2 1" light="type:directional; castShadow:true; intensity:0.9; color:white"></a-entity>
-    <a-entity id="luz_ambiente" light="type:ambient; intensity:0.2"></a-entity>
-
-    <!-- Planos que reciben sombras -->
-    <a-plane id="suelo" shadow="cast:false" shadowonly material="color:white;opacity:0.5" position="-1.25 0 -2" rotation="-90 10 0" scale="3.5 3 3"></a-plane>
-    <a-plane id="pared" shadow="cast:false" shadowonly material="color:white;opacity:0.5" position="-1.74 1.5 -3.457" rotation="0 10 0" scale="3 3 3"></a-plane>
   </a-scene>
 </body>
 </html>
