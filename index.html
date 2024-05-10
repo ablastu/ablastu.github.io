@@ -6,11 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script>
-    // Componente de oclusión para crear materiales que solo escriben en el buffer de profundidad
     AFRAME.registerComponent('occlusion', {
       init: function () {
         const material = new THREE.MeshStandardMaterial({
-          colorWrite: false // Hace el material invisible pero aún afecta la profundidad
+          colorWrite: false // El material es invisible pero afecta la profundidad
         });
         this.el.object3D.traverse((obj) => {
           if (obj.isMesh) obj.material = material;
@@ -24,19 +23,19 @@
     <!-- Configuración de la cámara para AR en WebXR -->
     <a-camera look-controls="enabled: false" wasd-controls-enabled="false"></a-camera>
 
-    <!-- Configuración de luces detallada para emitir sombras -->
-    <a-light type="directional" color="#FFFFFF" intensity="1" position="3 4 5" target="#scene" cast-shadow="true" 
-      shadow-camera-near="0.1" shadow-camera-far="100" shadow-camera-left="-10" shadow-camera-right="10" shadow-camera-top="10" shadow-camera-bottom="-10"></a-light>
-    <a-light type="ambient" color="#888888" intensity="0.5"></a-light>
+    <!-- Configuración de luces detallada para emitir sombras realistas -->
+    <a-light type="directional" color="#FFFFFF" intensity="1.5" position="2 4 2" target="#scene" cast-shadow="true"
+            shadow-camera-near="0.5" shadow-camera-far="50" shadow-camera-left="-5" shadow-camera-right="5" shadow-camera-top="5" shadow-camera-bottom="-5"></a-light>
+    <a-light type="ambient" color="#888888" intensity="0.3"></a-light>
 
-    <!-- Entidad que realiza oclusión y muestra modelos -->
+    <!-- Entidad que realiza oclusión y muestra modelos con dimensiones y distancias ajustadas -->
     <a-entity xrweb-hit-test="createAnchor: true">
-      <a-box position="0 0 0" width="0.5" height="0.5" depth="0.5" occlusion shadow="cast: true; receive: true"></a-box>
-      <a-gltf-model src="path/to/your/cactus.glb" scale="0.5 0.5 0.5" position="0 0 0" rotation="0 0 0" shadow="cast: true; receive: true"></a-gltf-model>
+      <a-box position="0 -0.25 0" width="1" height="0.5" depth="1" occlusion shadow="cast: true; receive: true"></a-box>
+      <a-gltf-model src="path/to/your/cactus.glb" scale="1 1 1" position="0 -0.25 0" rotation="0 0 0" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
 
     <!-- Suelo virtual para recibir sombras -->
-    <a-plane position="0 0 -1" rotation="-90 0 0" width="10" height="10" shadow="receive: true"></a-plane>
+    <a-plane position="0 -0.5 0" rotation="-90 0 0" width="10" height="10" shadow="receive: true"></a-plane>
   </a-scene>
 </body>
 </html>
