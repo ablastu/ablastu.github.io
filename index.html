@@ -9,11 +9,9 @@
   <script>
     AFRAME.registerComponent('occlusion', {
       init: function () {
-        // Create occlusion material (only depth not color)
         const material = new THREE.MeshStandardMaterial({
           colorWrite: false
         });
-        // Apply material to object and all children
         this.el.object3D.traverse((obj) => {
           if (obj.isMesh) obj.material = material;
         });
@@ -22,22 +20,25 @@
   </script>
 </head>
 <body>
-  <a-scene mindar-image="imageTargetSrc: targets(3).mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" renderer="shadowMapEnabled: true">
-    <!-- Cámara ajustada para AR -->
+  <a-scene mindar-image="imageTargetSrc: targets(3).mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" renderer="antialias: true; gammaOutput: true; shadowMapEnabled: true; shadowMapType: PCFSoftShadowMap;">
+    <a-assets>
+      <img id="environment" src="https://example.com/environment.hdr">
+    </a-assets>
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Configuración de luces para emitir sombras -->
-    <a-light type="directional" color="#FFFFFF" intensity="1" position="1 2 1" cast-shadow="true"></a-light>
-    <a-light type="spot" color="#FF0000" intensity="0.5" position="-1 2 -1" cast-shadow="true"></a-light>
-    <a-light type="ambient" color="#888888" intensity="0.5"></a-light>
+    <!-- Luces detalladas -->
+    <a-light type="directional" intensity="0.8" color="#FFF5EE" position="-1 2 1" target="#target" cast-shadow="true" shadow-camera-near="0.5" shadow-camera-far="50" shadow-camera-left="-10" shadow-camera-right="10" shadow-camera-top="10" shadow-camera-bottom="-10"></a-light>
+    <a-light type="spot" intensity="0.7" color="#FFEBCD" position="3 1 0" angle="30" penumbra="1" decay="2" distance="50" cast-shadow="true"></a-light>
+    <a-light type="ambient" intensity="0.25" color="#D8BFD8"></a-light>
 
-    <!-- Entidad que contiene los modelos 3D, aparecen cuando la marca es detectada -->
+    <!-- Entidad AR -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Cubo que realiza oclusión -->
       <a-box position="-0.5 -0.5 0" width="0.5" height="0.5" depth="0.5" rotation="-90 0 180" occlusion shadow="cast: true; receive: true"></a-box>
-      <!-- Modelo 3D que recibe y proyecta sombras -->
       <a-gltf-model src="cactus.glb" scale="1 1 1" position="0 0 0" rotation="-90 0 180" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
+
+    <!-- Suelo que recibe sombras -->
+    <a-plane position="0 0 -1" rotation="-90 0 0" width="10" height="10" shadow="receive: true"></a-plane>
   </a-scene>
 </body>
 </html>
