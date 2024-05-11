@@ -9,7 +9,7 @@
     AFRAME.registerComponent('occlusion', {
       init: function () {
         const material = new THREE.MeshStandardMaterial({
-          colorWrite: false // El material es invisible pero afecta la profundidad
+          colorWrite: false 
         });
         this.el.object3D.traverse((obj) => {
           if (obj.isMesh) obj.material = material;
