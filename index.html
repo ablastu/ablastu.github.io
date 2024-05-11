@@ -9,7 +9,7 @@
     AFRAME.registerComponent('occlusion', {
       init: function () {
         const material = new THREE.MeshStandardMaterial({
-          colorWrite: false // El material es invisible pero afecta la profundidad
+          colorWrite: false // Hace el material invisible pero afecta la profundidad
         });
         this.el.object3D.traverse((obj) => {
           if (obj.isMesh) obj.material = material;
@@ -30,12 +30,15 @@
 
     <!-- Entidad que realiza oclusión y muestra modelos con dimensiones y distancias ajustadas -->
     <a-entity xrweb-hit-test="createAnchor: true">
-      <!-- <a-box position="0 -0.25 0" width="1" height="0.5" depth="1" occlusion shadow="cast: true; receive: true"></a-box> -->
       <a-gltf-model src="Iphone seceond version finished.glb" scale="0.010 0.010 0.010" position="0.279 3.362 -9.316" rotation="-90 0 0" shadow="cast: true; receive: true"></a-gltf-model>
     </a-entity>
 
-    <!-- Suelo virtual para recibir sombras -->
-    <a-plane position="0 -0.5 -8.739" rotation="-90 0 0" width="10" height="10" shadow="receive: true"></a-plane>
+    <a-entity xrweb-hit-test="createAnchor: true">
+      <a-gltf-model src="cactus.glb" scale="1 1 1" position="2.279 0 -9.316" rotation="180 90 180" shadow="cast: true; receive: true"></a-gltf-model>
+    </a-entity>
+
+    <!-- Suelo virtual para recibir sombras, ahora invisible -->
+    <a-plane position="0 -0.5 -8.739" rotation="-90 0 0" width="10" height="10" material="opacity: 0; transparent: true" shadow="receive: true"></a-plane>
   </a-scene>
 </body>
 </html>
